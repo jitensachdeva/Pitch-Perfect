@@ -26,20 +26,9 @@ class RecordAudioViewController: UIViewController, AVAudioRecorderDelegate {
     var audioRecorder:AVAudioRecorder!
     var recordedAudio:RecordedAudio!
     
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     override func viewWillAppear(animated: Bool) {
         //reset to initial state
+        super.viewWillAppear(animated)
         recordingInitiated(false)
     }
 
@@ -60,6 +49,7 @@ class RecordAudioViewController: UIViewController, AVAudioRecorderDelegate {
         do {
             try session.setActive(false)
         } catch _ {
+            print("error in stop recording function")
         }
     }
     
@@ -87,6 +77,7 @@ class RecordAudioViewController: UIViewController, AVAudioRecorderDelegate {
         do {
             try session.setCategory(AVAudioSessionCategoryPlayAndRecord)
         } catch _ {
+            print("unable to set category for AVAudioSession")
         }
         audioRecorder = try? AVAudioRecorder(URL: filePath!, settings: [:])
         audioRecorder.delegate = self
@@ -122,7 +113,7 @@ class RecordAudioViewController: UIViewController, AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
         if(flag){
             recordedAudio = RecordedAudio(filePathUrl: recorder.url, title: recorder.url.lastPathComponent )
-            self.performSegueWithIdentifier("stopRecording", sender: recordedAudio)
+            performSegueWithIdentifier("stopRecording", sender: recordedAudio)
         }else {
             print("Recording failed")
             recordingInitiated(false)
